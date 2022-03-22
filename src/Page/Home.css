@@ -1,0 +1,12 @@
+img{
+    width:100%;
+    object-fit:cover;
+    border-radius: 10px;
+}
+.left{
+    flex-wrap:wrap
+}
+.Timeline{
+    justify-content: flex-start;
+}
+
