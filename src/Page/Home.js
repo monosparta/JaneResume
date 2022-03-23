@@ -92,7 +92,7 @@ function Home() {
     }
   ];
   return (
-    <Box component="div" sx={{ px: 12, py: 5 }}>
+    <Box component="div" sx={{ mx: 3, my: 5 ,p:2}}  className="Box">
       <Grid container spacing={2} alignItems="center">
         <Grid item>
           <Avatar
@@ -112,7 +112,7 @@ function Home() {
       <Divider sx={{ mb: 2 }} textAlign="left">
         <Typography variant="h6">簡歷</Typography>
       </Divider>
-      <Typography variant="body1" component="div">
+      <Typography variant="body1" component="div" sx={{pl:3}}>
         目前就讀台中科大資管系資訊應用菁英班，性格外向，會主動與人溝通，勇於嘗試各項事務，遇到不懂的會詢問，且管理能力較強
         技能方面
       </Typography>
@@ -120,14 +120,14 @@ function Home() {
       <Divider sx={{ mb: 2 }} textAlign="left">
         <Typography variant="h6">工作經驗</Typography>
       </Divider>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{pl:3}}>
         <WorkStepper steps={works} />
       </Grid>
       <Divider sx={{ mb: 2 }} textAlign="left">
         <Typography variant="h6">技能</Typography>
       </Divider>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{pl:3}}>
         {skill.map((data) => (
           <SkillListItem title={data.item} data={data.subItem} />
         ))}

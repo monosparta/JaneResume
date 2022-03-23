@@ -14,9 +14,9 @@ function WorkStepper(props) {
   return (
     <Grid container spacing={2}>
     <Grid >
-      <Timeline position="alternate">
+      <Timeline>
         {props.steps.map((work) => (
-          <TimelineItem>
+          <TimelineItem className="Timeline">
             <TimelineSeparator>
               <TimelineDot />
               <TimelineConnector />

@@ -4,7 +4,7 @@ import { Typography, Grid } from "@mui/material";
 
 function ProjectCard(props) {
   return (
-    <Grid container spacing={2} justifyContent="flex-start" alignItems="center">
+    <Grid container spacing={4} sx={{pl:3}} justifyContent="flex-start" alignItems="center">
       <Grid item xs={12} sm={6}>
         <Typography variant="h6">{props.label}</Typography>
         {props.description}

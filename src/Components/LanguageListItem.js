@@ -4,12 +4,12 @@ import { Typography, Grid } from "@mui/material";
 
 function LanguageListItem(props) {
   return (
-    <Grid container spacing={2} justifyContent="flex-start" alignItems="center">
-      <Grid item xs={5} >
+    <Grid container spacing={4} sx={{pl:3}} justifyContent="flex-start" justifyItems="flex-start" alignItems="center">
+      <Grid item >
         <Typography variant="h6">{props.type}</Typography>
       </Grid>
-      <Grid item xs={3}>
-      <Typography variant="subtitle1">{props.level}</Typography>
+      <Grid item >
+      <Typography variant="subtitle2">{props.level}</Typography>
 
       </Grid>
     </Grid>
