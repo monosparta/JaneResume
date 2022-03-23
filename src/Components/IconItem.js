@@ -9,7 +9,7 @@ function IconItem(props) {
   return (
       <List>
         {props.data.map((item) => (
-          <ListItem sx={{pb:1}}>
+          <ListItem >
             <ListItemIcon>
               {item.icon}
             </ListItemIcon>
