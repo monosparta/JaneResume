@@ -7,9 +7,9 @@ import {
 } from "@mui/material";
 function IconItem(props) {
   return (
-      <List >
+      <List>
         {props.data.map((item) => (
-          <ListItem disableGutters>
+          <ListItem sx={{pb:1}}>
             <ListItemIcon>
               {item.icon}
             </ListItemIcon>

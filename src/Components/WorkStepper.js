@@ -12,8 +12,9 @@ import {
 
 function WorkStepper(props) {
   return (
+    <Grid container spacing={2}>
     <Grid >
-      <Timeline>
+      <Timeline position="alternate">
         {props.steps.map((work) => (
           <TimelineItem>
             <TimelineSeparator>
@@ -21,14 +22,18 @@ function WorkStepper(props) {
               <TimelineConnector />
             </TimelineSeparator>
             <TimelineContent>
-              <Typography variant="h6" component="span">
+              <Typography variant="h6" component="span" >
                 {work.label}
+              </Typography>
+              <Typography variant="subtitle2" component="span" color="gray" sx={{p:1}}>
+                {work.time}
               </Typography>
               <Typography> {work.description}</Typography>
             </TimelineContent>
           </TimelineItem>
         ))}
       </Timeline>
+      </Grid>
     </Grid>
   );
 }

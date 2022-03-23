@@ -10,9 +10,7 @@ function SkillListItem(props) {
       </Typography>
       <List>
         {props.data.map((value) => (
-          <ListItem>
             <ListItemText primary={value} />
-          </ListItem>
         ))}
       </List>
     </Grid>
