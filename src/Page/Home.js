@@ -1,20 +1,16 @@
 import * as React from "react";
-import {
-  Box,
-  Grid,
-  Typography,
-  Avatar,
-  Divider,
-} from "@mui/material";
+import { Box, Grid, Typography, Avatar, Divider, Fab } from "@mui/material";
 import "./Home.css";
 import SkillListItem from "../Components/SkillListItem";
 import IconItem from "../Components/IconItem";
 import WorkStepper from "../Components/WorkStepper";
 import ProjectCard from "../Components/ProjectCard";
 import LanguageListItem from "../Components/LanguageListItem";
+import License from "../Components/License";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import GitHubIcon from "@mui/icons-material/GitHub";
+
 function Home() {
   const skill = [
     {
@@ -43,54 +39,71 @@ function Home() {
     { icon: <PhoneAndroidIcon />, label: "0937029528" },
     { icon: <GitHubIcon />, label: "https://github.com/Jane0731" },
   ];
+  const license = [
+    {
+      label: "IPAS 行動裝置程式設計師(Android)-初級",
+      time: "2021",
+    },
+    {
+      label: "MTA: Introduction to Programming using HTML and CSS",
+      time: "2019",
+    },
+    {
+      label: "丙級技術士電腦軟體設計",
+      time: "2018",
+    },
+    {
+      label: "TQC：PowerPoint2016 專業級",
+      time: "2018",
+    },
+  ];
   const works = [
     {
       label: "教學助理",
-      description: `主要負責協助老師指導學生程式設計能力，並且輔導學生考取CPE`,
+      description: `協助老師指導學生程式設計能力，並且輔導學生考取CPE`,
       time: "2021/10-在職中",
     },
     {
       label: "創科資訊實習生",
-      description: `For each ad campaign that you create, you can control how much
-                you're willing to spend on clicks and conversions, which networks
-                and geographical locations you want your ads to show on, and more.`,
+      description: `主要以學習為主，使未來能夠順利接軌工程師一職`,
       time: "2022/02-在職中",
     },
   ];
   const project = [
     {
       label: "留住浪浪",
-      description:"作為第一個實作的應用系統，可以說是從零開始進行的專案。開發期間，不僅包含系統規劃、功能發想、畫面設計還有團隊之間的溝通與合作等等，以及尋找合作的流浪狗家園，近四個月的製作時間。在這個系統我使用Laravel架構來做後端開發，並且成功的串接第三方支付，寫出一個購物車系統，以及使用了第三方登入的功能。在這個過程中我不僅學會了技術，同時也培養出自我探索與解決問題的能力。",
+      description:
+        "此系統是幫助浪花之家(流浪狗狗園)設計一個助養網站。在此專案中主要負責後端設計以及資料庫，使用Laravel作為整個專案的框架",
       image: "DOG.png",
     },
     {
       label: "Mono-Luck",
-      description: `這是自己第一次接觸前端，並且利用了React來開發，`,
+      description: `此系統是協助Monospace設計會員登記鎖櫃號碼以及提供會員查詢目前登記的狀況。在此專案中主要負責前端設計，利用React來做開發`,
       image: "Mono.png",
     },
   ];
   const language = [
     {
       type: "中文",
-      level:"母語",
+      level: "母語",
     },
     {
       type: "英文",
-      level:"初學",
+      level: "初學",
     },
     {
       type: "台語",
-      level:"精通",
-    }
+      level: "精通",
+    },
   ];
   return (
-    <Box component="div" sx={{ mx: 3, my: 5 ,p:2}}  className="Box">
-      <Grid container spacing={2} alignItems="center">
+    <Box component="div" sx={{ mx: 5, my: 7, p: 2 }} className="Box">
+      <Grid container spacing={2} alignItems="center" sx={{ pl: 3 }}>
         <Grid item>
           <Avatar
             alt="Jane"
             src="Jane.jpg"
-            variant="square"
+            variant="circle"
             sx={{ width: 144, height: 144 }}
           />
         </Grid>
@@ -100,24 +113,27 @@ function Home() {
           </Typography>
           <IconItem data={InforIcon} />
         </Grid>
+        <Grid item >
+          <Typography variant="body1" component="div">
+            你好，我叫廖翊臻，目前就讀台中科大資管系，在校成績表現優異。
+         </Typography>
+          <Typography variant="body1" component="div">
+            我的性格外向，會與人主動溝通，勇於嘗試各項新事物，在學習上如果有遇到任何的問題，會先自行上網查資料，
+            若無法解決便會向他人求助，而在團隊合作上，經常扮演領導者的身分，保持組內的關係融洽，有任何需要討論的問題，都會提出來一起討論，結合大家的想法來得出結論。
+          </Typography>
+        </Grid>
       </Grid>
-      <Divider sx={{ mb: 2 }} textAlign="left">
-        <Typography variant="h6">簡歷</Typography>
-      </Divider>
-      <Typography variant="body1" component="div" sx={{pl:3}}>
-        目前就讀台中科大資管系資訊應用菁英班，性格外向，會主動與人溝通，勇於嘗試各項事務，遇到不懂的會詢問，且管理能力較強
-        技能方面
-      </Typography>
-      <Divider sx={{ mb: 2 }} textAlign="left">
+
+      <Divider sx={{ my: 2 }} textAlign="left">
         <Typography variant="h6">工作經驗</Typography>
       </Divider>
-      <Grid container spacing={2} sx={{pl:3}}>
+      <Grid container spacing={2} sx={{ pl: 3 }}>
         <WorkStepper steps={works} />
       </Grid>
-      <Divider sx={{ mb: 2 }} textAlign="left">
+      <Divider textAlign="left">
         <Typography variant="h6">技能</Typography>
       </Divider>
-      <Grid container spacing={2} sx={{pl:3}}>
+      <Grid container spacing={2} sx={{ pl: 3 }}>
         {skill.map((data) => (
           <SkillListItem title={data.item} data={data.subItem} />
         ))}
@@ -126,13 +142,25 @@ function Home() {
         <Typography variant="h6">專案與作品集</Typography>
       </Divider>
       {project.map((data) => (
-      <ProjectCard label={data.label} description={data.description} image={data.image}/>
+        <ProjectCard
+          label={data.label}
+          description={data.description}
+          image={data.image}
+        />
       ))}
-       <Divider sx={{ mb: 2 }} textAlign="left">
+      <Divider sx={{ mb: 2 }} textAlign="left">
+        <Typography variant="h6">證照一覽</Typography>
+      </Divider>
+      <Grid container spacing={2} sx={{ pl: 3 }}>
+        {license.map((data) => (
+          <License label={data.label} time={data.time} />
+        ))}
+      </Grid>
+      <Divider sx={{ my: 2 }} textAlign="left">
         <Typography variant="h6">語言能力</Typography>
       </Divider>
       {language.map((data) => (
-      <LanguageListItem type={data.type} level={data.level}/>
+        <LanguageListItem type={data.type} level={data.level} />
       ))}
     </Box>
   );

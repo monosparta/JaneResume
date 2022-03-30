@@ -9,7 +9,7 @@ function IconItem(props) {
   return (
       <List>
         {props.data.map((item) => (
-          <ListItem >
+          <ListItem disablePadding={true}>
             <ListItemIcon>
               {item.icon}
             </ListItemIcon>
