@@ -1,0 +1,16 @@
+img{
+    width:100%;
+    object-fit:cover;
+}
+
+.Box{
+    border:  rgb(196, 194, 194) 1px groove;
+    border-radius: 2px;
+    background-color: white;
+}
+body{
+    background-color:rgb(248, 247, 247);
+}
+.Timeline::before{
+    content: none !important;
+}
