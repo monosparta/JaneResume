@@ -1,16 +1,21 @@
 import * as React from "react";
 import {
+  FormContainer,
+  TextFieldElement,
+  PasswordElement,
+} from "react-hook-form-mui";
+import { useNavigate } from "react-router-dom";
+
+import axios from "../Axios.config";
+import {
   Box,
   Grid,
   Typography,
   Avatar,
   Button,
   CssBaseline,
-  TextField,
   Divider,
-  Checkbox,
   Link,
-  Paper,
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -19,17 +24,28 @@ import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 const theme = createTheme();
-
 function SignUp() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
+  let history = useNavigate();
 
+  const handleSubmit = (e) => {
+    const json = JSON.stringify({ first_name: e.firstName, second_name: e.lastName , email: e.email, password: e.password });
+      axios
+        .post("api/signup", JSON.parse(json))
+        .then((response) => {
+          history("/signin");
+        })
+        .catch((error) => {
+        });
+  };
+  const parseError = (error) => {
+    if (error.type === "pattern") {
+      return "請輸入正確的電子郵件格式";
+    }
+    if (error.type === "validate" && error.ref.name === "password") {
+      return "密碼八個字元以上，至少包含一個字母和一個數字：";
+    }
+    return "此欄位必填";
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -48,80 +64,87 @@ function SignUp() {
           <Typography component="h1" variant="h5">
             註冊
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  autoComplete="given-name"
-                  name="firstName"
-                  size="small"
-                  required
-                  fullWidth
-                  id="firstName"
-                  label="姓氏"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="名字"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  id="email"
-                  label="電子郵件"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  name="password"
-                  label="密碼"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  size="small"
-                  required
-                  fullWidth
-                  name="checkpassword"
-                  label="確認密碼"
-                  type="password"
-                  id="checkpassword"
-                  autoComplete="new-password"
-                />
-              </Grid>
-            </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+          <Box sx={{ mt: 3 }}>
+            <FormContainer
+              onSuccess={handleSubmit}
+              FormProps={{
+                "aria-autocomplete": "none",
+                autoComplete: "new-password",
+              }}
             >
-              註冊
-            </Button>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <TextFieldElement
+                    required
+                    fullWidth
+                    size="small"
+                    autoFocus
+                    autoComplete={"given-name"}
+                    label={"姓氏"}
+                    name={"firstName"}
+                    id="firstName"
+                    parseError={parseError}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextFieldElement
+                    required
+                    fullWidth
+                    size="small"
+                    autoFocus
+                    autoComplete={"family-name"}
+                    label={"名字"}
+                    name={"lastName"}
+                    id="lastName"
+                    parseError={parseError}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextFieldElement
+                    required
+                    size="small"
+                    type={"email"}
+                    label={"電子郵件"}
+                    fullWidth
+                    parseError={parseError}
+                    id="email"
+                    autoComplete="email"
+                    name={"email"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <PasswordElement
+                    size="small"
+                    required
+                    fullWidth
+                    name="password"
+                    label="密碼"
+                    type="password"
+                    id="password"
+                    parseError={parseError}
+                    validation={{
+                      validate: (value) => {
+                        if (
+                          !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)
+                        ) {
+                          return "Password should match";
+                        }
+                      },
+                    }}
+                    autoComplete="new-password"
+                  />
+                </Grid>
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                註冊
+              </Button>{" "}
+            </FormContainer>
+
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="/signin" variant="body2">
