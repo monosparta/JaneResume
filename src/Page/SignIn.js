@@ -6,13 +6,26 @@ import {
   Avatar,
   Button,
   CssBaseline,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControlLabel,
   Checkbox,
   Link,
   Divider,
-  Container,
+  Container,Snackbar
 } from "@mui/material";
+import {
+  FormContainer,
+  TextFieldElement,
+  PasswordElement,
+} from "react-hook-form-mui";
+import { useNavigate } from "react-router-dom";
+import MuiAlert from "@mui/material/Alert";
+import axios from "../Axios.config";
+
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -20,17 +33,48 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 const theme = createTheme();
-
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 function SignIn() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  let history = useNavigate();
+  const [open, setOpen] = React.useState(false);
+  const [submitDetail, setsubmitDetail] = React.useState("");
+  const [snackBarType, setsnackBarType] = React.useState("");
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
   };
-
+  const handleSubmit = (e) => {
+    const json = JSON.stringify({
+      email: e.email,
+      password: e.password,
+    });
+    axios
+      .post("api/signin", JSON.parse(json))
+      .then((response) => {
+        setsnackBarType("success")
+        setsubmitDetail(response.data["detail"])
+        setOpen(true);
+        setTimeout(() => history("/"), 3000);
+      })
+      .catch((error) => {
+        setsnackBarType("error")
+        setsubmitDetail(error.response.data["detail"])
+        setOpen(true);
+      });
+  };
+  const parseError = (error) => {
+    if (error.type === "pattern") {
+      return "請輸入正確的電子郵件格式";
+    }
+    if (error.type === "validate" && error.ref.name === "password") {
+      return "密碼八個字元以上，至少包含一個字母和一個數字：";
+    }
+    return "此欄位必填";
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -49,46 +93,60 @@ function SignIn() {
           <Typography component="h1" variant="h5">
             登入
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <TextField
-              size="small"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="電子郵件"
-              name="email"
-              autoComplete="email"
-              autoFocus
-            />
-            <TextField
-              size="small"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="密碼"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="記住我"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+          <Box sx={{ mt: 1 }}>
+            <FormContainer
+              onSuccess={handleSubmit}
+              FormProps={{
+                "aria-autocomplete": "none",
+                autoComplete: "new-password",
+              }}
             >
-              登入
-            </Button>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextFieldElement
+                    required
+                    size="small"
+                    type={"email"}
+                    label={"電子郵件"}
+                    fullWidth
+                    parseError={parseError}
+                    id="email"
+                    autoComplete="email"
+                    name={"email"}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <PasswordElement
+                    size="small"
+                    required
+                    fullWidth
+                    name="password"
+                    label="密碼"
+                    type="password"
+                    id="password"
+                    parseError={parseError}
+                    validation={{
+                      validate: (value) => {
+                        if (
+                          !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)
+                        ) {
+                          return "Password should match";
+                        }
+                      },
+                    }}
+                    autoComplete="new-password"
+                  />
+                </Grid>{" "}
+              </Grid>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                登入
+              </Button>
+            </FormContainer>
             <Grid container>
               <Grid item xs>
                 <Link href="/forgetpassword" variant="body2">
@@ -120,6 +178,20 @@ function SignIn() {
               </Grid>
             </Grid>
           </Box>
+          <Snackbar
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            open={open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackBarType}
+              sx={{ width: "100%" }}
+            >
+              {submitDetail}
+            </Alert>
+          </Snackbar>
         </Box>
       </Container>
     </ThemeProvider>

@@ -16,26 +16,51 @@ import {
   CssBaseline,
   Divider,
   Link,
+  Snackbar,
   Container,
 } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
+
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 const theme = createTheme();
 function SignUp() {
   let history = useNavigate();
-
+  const [open, setOpen] = React.useState(false);
+  const [submitDetail, setsubmitDetail] = React.useState("");
+  const [snackBarType, setsnackBarType] = React.useState("");
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
   const handleSubmit = (e) => {
-    const json = JSON.stringify({ first_name: e.firstName, second_name: e.lastName , email: e.email, password: e.password });
-      axios
-        .post("api/signup", JSON.parse(json))
-        .then((response) => {
-          history("/signin");
-        })
-        .catch((error) => {
-        });
+    const json = JSON.stringify({
+      first_name: e.firstName,
+      second_name: e.lastName,
+      email: e.email,
+      password: e.password,
+    });
+    axios
+      .post("api/signup", JSON.parse(json))
+      .then((response) => {
+        setsnackBarType("success")
+        setsubmitDetail(response.data["detail"])
+        setOpen(true);
+        setTimeout(() => history("/signin"), 3000);
+      })
+      .catch((error) => {
+        setsnackBarType("error")
+        setsubmitDetail(error.response.data["detail"])
+        setOpen(true);
+      });
   };
   const parseError = (error) => {
     if (error.type === "pattern") {
@@ -171,6 +196,20 @@ function SignUp() {
               </Grid>
             </Grid>
           </Box>
+          <Snackbar
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            open={open}
+            autoHideDuration={6000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity={snackBarType}
+              sx={{ width: "100%" }}
+            >
+              {submitDetail}
+            </Alert>
+          </Snackbar>
         </Box>
       </Container>
     </ThemeProvider>
