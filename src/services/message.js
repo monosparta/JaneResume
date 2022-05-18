@@ -12,13 +12,40 @@ const addMessage = async (userId, description) => {
     description: description,
   });
 };
-const checkUseridFormat = async (user_id) => {
-  return !user_id;
+const updateMessage = async (userId, messageId, description) => {
+  await db["Messages"].update(
+    { description: description },
+    {
+      where: {
+        id: messageId,
+        user_id: userId,
+      },
+    }
+  );
+};
+const deleteMessage = async (userId, messageId) => {
+  await db["Messages"].destroy({
+    where: {
+      id: messageId,
+      user_id: userId,
+    },
+  });
+};
+const checkUseridFormat = async (userId) => {
+  return !userId;
 };
 const checkDescriptionFormat = async (description) => {
   return !description;
 };
+const checkMessageidFormat = async (messageId) => {
+  return !messageId;
+};
 module.exports = {
   getAllMessage,
-  addMessage,checkUseridFormat,checkDescriptionFormat
+  addMessage,
+  checkUseridFormat,
+  checkDescriptionFormat,
+  checkMessageidFormat,
+  updateMessage,
+  deleteMessage,
 };

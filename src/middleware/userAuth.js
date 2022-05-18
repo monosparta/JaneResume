@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
+const { userAuthService } = require("../services/index");
 
 const userJWT = async (req, res, next) => {
-  if (!(req.headers.authorization)) {
+  if (!req.headers.authorization) {
     return res.status(403).json({
       detail: "沒有攜帶令牌",
     });
@@ -14,8 +15,14 @@ const userJWT = async (req, res, next) => {
             detail: "授權錯誤",
           });
         } else {
-          req.tokenPayload = decoded;
-          next();
+          if (await userAuthService.checkUserToken(decoded.user_id, token)) {
+            req.tokenPayload = decoded;
+            next();
+          } else {
+            return res.status(403).json({
+              detail: "授權錯誤",
+            });
+          }
         }
       } catch (err) {
         return res.status(403).json({
