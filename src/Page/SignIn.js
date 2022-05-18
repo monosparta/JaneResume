@@ -58,6 +58,9 @@ function SignIn() {
         setsnackBarType("success")
         setsubmitDetail(response.data["detail"])
         setOpen(true);
+        localStorage.setItem("token",response.data["token"])
+        localStorage.setItem("name",response.data["name"])
+
         setTimeout(() => history("/"), 3000);
       })
       .catch((error) => {

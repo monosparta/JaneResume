@@ -237,7 +237,6 @@ function Home() {
               label="留言"
               name="message"
               autoComplete="message"
-              autoFocus
               rows={4}
               multiline
             />

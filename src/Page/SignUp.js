@@ -51,14 +51,14 @@ function SignUp() {
     axios
       .post("api/signup", JSON.parse(json))
       .then((response) => {
-        setsnackBarType("success")
-        setsubmitDetail(response.data["detail"])
+        setsnackBarType("success");
+        setsubmitDetail(response.data["detail"]);
         setOpen(true);
         setTimeout(() => history("/signin"), 3000);
       })
       .catch((error) => {
-        setsnackBarType("error")
-        setsubmitDetail(error.response.data["detail"])
+        setsnackBarType("error");
+        setsubmitDetail(error.response.data["detail"]);
         setOpen(true);
       });
   };
@@ -152,7 +152,7 @@ function SignUp() {
                         if (
                           !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)
                         ) {
-                          return "Password should match";
+                          return "格式不符";
                         }
                       },
                     }}
@@ -180,19 +180,25 @@ function SignUp() {
             <Divider sx={{ mt: 3, mb: 2 }}>使用第三方帳號進行註冊</Divider>
             <Grid container sx={{ justifyContent: "center" }}>
               <Grid item>
-                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                  <GoogleIcon />
-                </Avatar>
+                <Link href="http://localhost:3000/auth/google" underline="none">
+                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                    <GoogleIcon />
+                  </Avatar>{" "}
+                </Link>
               </Grid>
               <Grid item>
-                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                  <GitHubIcon />
-                </Avatar>
+              <Link href="http://localhost:3000/auth/github" underline="none">
+                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                    <GitHubIcon />
+                  </Avatar>
+                  </Link>
               </Grid>
               <Grid item>
-                <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                  <FacebookIcon />
-                </Avatar>
+                <Link href="http://localhost:3000/auth/facebook" underline="none">
+                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                    <FacebookIcon />
+                  </Avatar>
+                </Link>
               </Grid>
             </Grid>
           </Box>
