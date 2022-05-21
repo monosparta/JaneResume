@@ -1,56 +1,74 @@
 import * as React from "react";
-import {Box,Avatar,Menu,MenuItem,ListItemIcon,Divider,IconButton,Typography,Tooltip} from "@mui/material";
+import {
+  Box,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  IconButton,
+  Typography,
+  Tooltip,
+} from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import axios from "../Axios.config";
 
 function AccountMenu() {
-  const handlelogout=()=>{
-    const json = JSON.stringify({
-    });
+  const handleLogout = () => {
+    axios
+      .post("api/auth/signout")
+      .then((response) => {
+        console.log(response.data["detail"]);
+        localStorage.clear();
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error.response.data["detail"]);
+      });
+  };
+  const handleLogin = () => {
+    const json = JSON.stringify({});
     axios
       .post("api/signin", JSON.parse(json))
       .then((response) => {
-       
+        localStorage.setItem("token", response.data["token"]);
       })
-      .catch((error) => {
-        
-      });
-  }
-  const stringToColor=(string)=> {
+      .catch((error) => {});
+  };
+  const stringToColor = (string) => {
     let hash = 0;
     let i;
     /* eslint-disable no-bitwise */
     for (i = 0; i < string.length; i += 1) {
       hash = string.charCodeAt(i) + ((hash << 5) - hash);
     }
-  
-    let color = '#';
-  
+
+    let color = "#";
+
     for (i = 0; i < 3; i += 1) {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
     /* eslint-enable no-bitwise */
-  
+
     return color;
-  }
-  
-  const stringAvatar=(name)=> {
-    if(name){
+  };
+
+  const stringAvatar = (name) => {
+    if (name) {
       return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
-    };
+        sx: {
+          bgcolor: stringToColor(name),
+        },
+        children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+      };
     }
-    
-  }
+  };
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    setUserName(localStorage.getItem("name"),[]);
+    setUserName(localStorage.getItem("name"), []);
   });
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -62,7 +80,14 @@ function AccountMenu() {
   };
   return (
     <React.Fragment>
-      <Box sx={{ display: "flex", alignItems: "center", textAlign: "center",flexDirection: 'row-reverse' }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          textAlign: "center",
+          flexDirection: "row-reverse",
+        }}
+      >
         <Tooltip title="帳戶設定">
           <IconButton
             onClick={handleClick}
@@ -116,7 +141,7 @@ function AccountMenu() {
           <Avatar /> 個人資訊
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handlelogout}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

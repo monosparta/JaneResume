@@ -1,0 +1,36 @@
+[
+  {
+    "item": "Programming",
+    "subItem": [
+      "Python",
+      "HTML5",
+      "CSS",
+      "JavaScript",
+      "JQuery",
+      "PHP"
+    ]
+  },
+  {
+    "item": "IDE",
+    "subItem": [
+      "Eclipse",
+      "Android Studio",
+      "Visual Studio 2019",
+      "Dev-C++"
+    ]
+  },
+  {
+    "item": "Database",
+    "subItem": [
+      "MySQL"
+    ]
+  },
+  {
+    "item": "Frameworks",
+    "subItem": [
+      "Laravel",
+      "React.js",
+      "Node.js"
+    ]
+  }
+]

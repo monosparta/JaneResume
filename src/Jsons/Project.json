@@ -1,0 +1,12 @@
+[
+    {
+        "label": "留住浪浪",
+        "description": "此系統是幫助浪花之家(流浪狗狗園)設計一個助養網站。在此專案中主要負責後端設計以及資料庫，使用Laravel作為整個專案的框架",
+        "image": "DOG.png"
+    },
+    {
+        "label": "Mono-Luck",
+        "description": "此系統是協助Monospace設計會員登記鎖櫃號碼以及提供會員查詢目前登記的狀況。在此專案中主要負責前端設計，利用React來做開發",
+        "image": "Mono.png"
+    }
+]

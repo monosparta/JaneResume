@@ -6,13 +6,6 @@ import {
   Avatar,
   Button,
   CssBaseline,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  FormControlLabel,
-  Checkbox,
   Link,
   Divider,
   Container,Snackbar
@@ -25,7 +18,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import MuiAlert from "@mui/material/Alert";
 import axios from "../Axios.config";
-
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -59,8 +51,6 @@ function SignIn() {
         setsubmitDetail(response.data["detail"])
         setOpen(true);
         localStorage.setItem("token",response.data["token"])
-        localStorage.setItem("name",response.data["name"])
-
         setTimeout(() => history("/"), 3000);
       })
       .catch((error) => {
