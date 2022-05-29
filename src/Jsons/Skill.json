@@ -4,10 +4,11 @@
     "subItem": [
       "Python",
       "HTML5",
-      "CSS",
+      "Tailwind CSS",
       "JavaScript",
       "JQuery",
-      "PHP"
+      "PHP",
+      "MicroPython"
     ]
   },
   {
@@ -16,7 +17,7 @@
       "Eclipse",
       "Android Studio",
       "Visual Studio 2019",
-      "Dev-C++"
+      "Thonny"
     ]
   },
   {
@@ -29,8 +30,16 @@
     "item": "Frameworks",
     "subItem": [
       "Laravel",
-      "React.js",
-      "Node.js"
+      "React",
+      "Vue",
+      "Nodejs"
+    ]
+  },{
+    "item": "Others",
+    "subItem": [
+      "Git",
+      "MQTT",
+      "Figma"
     ]
   }
 ]

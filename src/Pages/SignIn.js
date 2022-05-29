@@ -8,7 +8,8 @@ import {
   CssBaseline,
   Link,
   Divider,
-  Container,Snackbar
+  Container,
+  Snackbar,
 } from "@mui/material";
 import {
   FormContainer,
@@ -22,6 +23,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { useState, useEffect } from "react";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 const theme = createTheme();
@@ -30,9 +32,9 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 });
 function SignIn() {
   let history = useNavigate();
-  const [open, setOpen] = React.useState(false);
-  const [submitDetail, setsubmitDetail] = React.useState("");
-  const [snackBarType, setsnackBarType] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [submitDetail, setsubmitDetail] = useState("");
+  const [snackBarType, setsnackBarType] = useState("");
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -47,15 +49,15 @@ function SignIn() {
     axios
       .post("api/signin", JSON.parse(json))
       .then((response) => {
-        setsnackBarType("success")
-        setsubmitDetail(response.data["detail"])
+        setsnackBarType("success");
+        setsubmitDetail(response.data["detail"]);
         setOpen(true);
-        localStorage.setItem("token",response.data["token"])
+        localStorage.setItem("token", response.data["token"]);
         setTimeout(() => history("/"), 3000);
       })
       .catch((error) => {
-        setsnackBarType("error")
-        setsubmitDetail(error.response.data["detail"])
+        setsnackBarType("error");
+        setsubmitDetail(error.response.data["detail"]);
         setOpen(true);
       });
   };

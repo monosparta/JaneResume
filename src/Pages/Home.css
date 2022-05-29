@@ -1,16 +1,41 @@
-img{
-    width:100%;
-    object-fit:cover;
+img {
+  width: 100%;
+  object-fit: cover;
 }
 
-.Box{
-    border:  rgb(196, 194, 194) 1px groove;
-    border-radius: 2px;
-    background-color: white;
+.Box {
+  border: rgb(196, 194, 194) 1px groove;
+  border-radius: 2px;
+  background-color: white;
 }
-body{
-    background-color:rgb(248, 247, 247);
+body {
+  background-color: rgb(248, 247, 247);
+}
+.scrollTop {
+  position: fixed;
+  bottom: 20px;
+  right:3%;
+  align-items: center;
+  justify-content: right;
+  z-index: 1000;
+  cursor: pointer;
+  animation: fadeIn 0.5s;
+  transition: opacity 0.6s;
+  opacity: 0.5;
+  font-size: 3rem !important;
 }
 .Timeline::before{
     content: none !important;
+}
+.scrollTop:hover {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }

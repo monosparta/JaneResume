@@ -5,12 +5,12 @@ import {
   Typography,
   Avatar,
   Divider,
-  TextField,
+  Snackbar,
   Button,
-  Paper,
-  IconButton,
-  InputBase,
+  Fab,
 } from "@mui/material";
+import { useState, useEffect } from "react";
+
 import "./Home.css";
 import SkillListItem from "../Components/SkillListItem";
 import IconItem from "../Components/IconItem";
@@ -18,25 +18,98 @@ import WorkStepper from "../Components/WorkStepper";
 import ProjectCard from "../Components/ProjectCard";
 import LanguageListItem from "../Components/LanguageListItem";
 import License from "../Components/License";
+import MessageBoard from "../Components/MessageBoard";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import GitHubIcon from "@mui/icons-material/GitHub";
-import SearchIcon from "@mui/icons-material/Search";
 import SkillData from "../Jsons/Skill.json";
 import LicenseData from "../Jsons/License.json";
-import WorkData from "../Jsons/Work.json";
+import ExperienceData from "../Jsons/Experience.json";
 import ProjectData from "../Jsons/Project.json";
 import LanguageData from "../Jsons/Language.json";
 import IntroductionData from "../Jsons/Introduction.json";
+import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
+import {
+  FormContainer,
+  TextFieldElement,
+  SelectElement,
+} from "react-hook-form-mui";
+import axios from "../Axios.config";
+
 function Home() {
   const InforIcon = [
     { icon: <EmailIcon />, label: "jane99168@gmail.com" },
     { icon: <PhoneAndroidIcon />, label: "0937029528" },
     { icon: <GitHubIcon />, label: "https://github.com/Jane0731" },
   ];
+  const [allMessages, setAllMessages] = useState([]);
+  const [userId, setUserId] = useState("");
+  const [state, setState] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
+  const getMessages = () => {
+    axios
+      .get("api/message")
+      .then((response) => {
+        setState(true);
+        setAllMessages(response.data["messages"]);
+        setUserId(response.data["userid"]);
+      })
+      .catch((error) => {});
+  };
+  useEffect(() => {
+    getMessages();
+  }, state);
+  const checkScrollTop = () => {
+    if (!showScroll && window.pageYOffset > 400) {
+      setShowScroll(true);
+    } else if (showScroll && window.pageYOffset <= 400) {
+      setShowScroll(false);
+    }
+  };
+  const clickMessage = () => {
+    setShowEdit(!showEdit);
+  };
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const parseError = (error) => {
+    return "此欄位必填";
+  };
+  const handleSubmit = (e) => {
+    const token = localStorage.getItem("token");
+    const json = JSON.stringify({
+      description: e.message,
+      identity: e.identity,
+    });
+    console.log(e.identity == 1, !token);
+
+    if (e.identity == 1 && !token) {
+      alert("請先登入");
+    } else {
+      console.log(json);
+      axios
+        .post("api/message", JSON.parse(json))
+        .then((response) => {
+          alert("新增成功");
+
+          setTimeout(() => window.location.reload(), 3000);
+        })
+        .catch((error) => {
+          alert("新增失敗");
+        });
+    }
+  };
+
+  window.addEventListener("scroll", checkScrollTop);
   return (
     <Box>
       <Box component="div" sx={{ mx: 5, my: 7, p: 2 }} className="Box">
+        <ArrowCircleUpIcon
+          className="scrollTop"
+          onClick={scrollTop}
+          style={{ display: showScroll ? "flex" : "none" }}
+        />
         <Grid container spacing={2} alignItems="center" sx={{ pl: 3 }}>
           <Grid item>
             <Avatar
@@ -62,16 +135,10 @@ function Home() {
           </Grid>
         </Grid>
         <Divider sx={{ my: 2 }} textAlign="left">
-          <Typography variant="h6">工作經驗</Typography>
-        </Divider>
-        <Grid container spacing={2} sx={{ pl: 3 }}>
-          <WorkStepper steps={WorkData} />
-        </Grid>
-        <Divider sx={{ my: 2 }} textAlign="left">
           <Typography variant="h6">在學經歷</Typography>
         </Divider>
         <Grid container spacing={2} sx={{ pl: 3 }}>
-          <WorkStepper steps={WorkData} />
+          <WorkStepper steps={ExperienceData} />
         </Grid>
         <Divider textAlign="left">
           <Typography variant="h6">技能</Typography>
@@ -107,62 +174,77 @@ function Home() {
         ))}
       </Box>
       <Box component="div" sx={{ mx: 5, my: 7 }}>
-        <Typography variant="h4">歡迎留下您的想法或意見</Typography>
         <Grid
           container
-          spacing={2}
+          direction="row"
+          justifyContent="space-between"
           alignItems="center"
-          sx={{ marginY: 3, pl: 3 }}
         >
-          <Paper
-            component="form"
-            sx={{
-              p: "2px 4px",
-              display: "flex",
-              alignItems: "center",
-              width: 400,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 1, flex: 1 }}
-              placeholder="search"
-              inputProps={{ "aria-label": "search" }}
-            />
-            <IconButton type="submit" sx={{ p: "10px" }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Paper>
+          <Fab variant="extended" size="medium" color="secondary" aria-label="add" onClick={clickMessage}>
+            <ArrowCircleUpIcon sx={{ mr: 1 }} />
+            我要留言
+          </Fab>
+          <Typography variant="h4">訪客留言版</Typography>
+          <Box></Box>
         </Grid>
-        <Grid
-          container
-          spacing={2}
-          alignItems="center"
-          sx={{ marginY: 3, pl: 3 }}
-        >
-          <Paper
-            component="form"
-            sx={{
-              p: "2px 4px",
-              width: 400,
-            }}
+        <FormContainer onSuccess={handleSubmit}>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            sx={{ marginY: 3, pl: 3 }}
+            style={{ display: showEdit ? "flex" : "none" }}
           >
-            <TextField
+            <TextFieldElement
+              required
+              parseError={parseError}
               fullWidth
-              id="outlined-multiline-static"
+              id="message"
               label="留言"
               name="message"
-              autoComplete="message"
               rows={4}
               multiline
             />
-            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button variant="contained" sx={{ marginY: 2 }}>
+            <SelectElement
+              required
+              parseError={parseError}
+              fullWidth
+              id="identity"
+              label="留言身分"
+              name="identity"
+              options={[
+                { id: "0", title: "匿名留言" },
+                { id: "1", title: "一般留言" },
+              ]}
+              sx={{ my: 3 }}
+            />
+            <Box>
+              <Button variant="contained" sx={{ marginY: 2 }} type="submit">
                 發布
               </Button>
             </Box>
-          </Paper>
+          </Grid>
+        </FormContainer>
+        <Grid spacing={2} sx={{ marginY: 3 }}>
+          {(allMessages || []).map((message) => (
+            <MessageBoard
+              avatar={
+                message.User != null
+                  ? message.User.first_name[0] + message.User.second_name[0]
+                  : "匿名"
+              }
+              userName={
+                message.User != null
+                  ? message.User.first_name + message.User.second_name
+                  : "匿名"
+              }
+              createdAt={message.createdAt}
+              description={message.description}
+              id={message.id}
+              actionState={message.user_id == userId ? true : false}
+            />
+          ))}
         </Grid>
-        {/* <Grid container spacing={2} alignItems="center" sx={{ pl: 3 }}></Grid> */}
       </Box>
     </Box>
   );

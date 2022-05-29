@@ -9,7 +9,6 @@ import NavbarSignIn from "./Components/NavbarSignIn";
 import NavbarSignOut from "./Components/NavbarSignOut";
 function App() {
   const userToken = localStorage.getItem("token");
-  const userName = localStorage.getItem("name");
 
   return (
     <Router>

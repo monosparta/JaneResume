@@ -9,17 +9,19 @@ import {
   IconButton,
   Typography,
   Tooltip,
+  Link,
 } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
 import { useState, useEffect } from "react";
 import axios from "../Axios.config";
 
 function AccountMenu() {
+  const [userName, setUserName] = useState("");
+  const [state, setState] = useState(false);
   const handleLogout = () => {
     axios
-      .post("api/auth/signout")
+      .get("api/auth/signout")
       .then((response) => {
-        console.log(response.data["detail"]);
         localStorage.clear();
         window.location.reload();
       })
@@ -27,15 +29,22 @@ function AccountMenu() {
         console.log(error.response.data["detail"]);
       });
   };
-  const handleLogin = () => {
-    const json = JSON.stringify({});
+  const getUserInfo = () => {
     axios
-      .post("api/signin", JSON.parse(json))
+      .get("api/auth/userinfo")
       .then((response) => {
-        localStorage.setItem("token", response.data["token"]);
+        setState(true);
+        setUserName(response.data["name"]);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        if (error.response.data["detail"] == "登入過期，請重新登入") {
+          alert(error.response.data["detail"]);
+        }
+      });
   };
+  useEffect(() => {
+    getUserInfo();
+  }, state);
   const stringToColor = (string) => {
     let hash = 0;
     let i;
@@ -50,8 +59,6 @@ function AccountMenu() {
       const value = (hash >> (i * 8)) & 0xff;
       color += `00${value.toString(16)}`.slice(-2);
     }
-    /* eslint-enable no-bitwise */
-
     return color;
   };
 
@@ -65,11 +72,6 @@ function AccountMenu() {
       };
     }
   };
-  const [userName, setUserName] = useState("");
-
-  useEffect(() => {
-    setUserName(localStorage.getItem("name"), []);
-  });
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -86,6 +88,7 @@ function AccountMenu() {
           alignItems: "center",
           textAlign: "center",
           flexDirection: "row-reverse",
+          m: 2,
         }}
       >
         <Tooltip title="帳戶設定">
@@ -100,7 +103,9 @@ function AccountMenu() {
             <Avatar {...stringAvatar(userName)} />
           </IconButton>
         </Tooltip>
-        <Typography sx={{ minWidth: 100 }}>履歷查看</Typography>
+        <Link href="/" underline="none" variant="h6" sx={{ mx: 4 }}>
+          履歷查看
+        </Link>
       </Box>
       <Menu
         anchorEl={anchorEl}
