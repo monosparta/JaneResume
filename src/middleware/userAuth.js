@@ -11,8 +11,8 @@ const userJWT = async (req, res, next) => {
     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
       try {
         if (err) {
-          return res.status(403).json({
-            detail: "授權錯誤",
+          return res.status(401).json({
+            detail: "登入過期，請重新登入",
           });
         } else {
           if (await userAuthService.checkUserToken(decoded.user_id, token)) {

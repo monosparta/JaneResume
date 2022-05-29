@@ -27,7 +27,7 @@ const generalSignUp = async (req, res) => {
       detail: "註冊成功，將在3秒後跳轉至登入頁面",
     });
   } catch (err) {
-    return res.json({
+    return res.status(500).json({
       detail: "伺服器錯誤",
     });
   }
@@ -53,12 +53,13 @@ const generalSignIn = async (req, res) => {
         detail: "信箱或密碼輸入不正確",
       });
     }
-    signInMemberInfo = await userService.getMemberInfo(req.body.email);
+    signInMemberInfo = await userService.useEmailGetMemberInfo(req.body.email);
     const token = jwt.sign(
       { user_id: signInMemberInfo.id, user_mail: signInMemberInfo.email },
-      process.env.SECRET_KEY
+      process.env.SECRET_KEY,
+      { expiresIn: "1h" }
     );
-    await userService.addToken(signInMemberInfo.id,token)
+    await userService.addToken(signInMemberInfo.id, token);
     return res.status(200).json({
       detail: "登入成功",
       token: token,
@@ -66,33 +67,26 @@ const generalSignIn = async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    return res.json({
+    return res.status(500).json({
       detail: "伺服器錯誤",
     });
   }
 };
-const generalSignOut=async(req,res)=>{
-  try{
-    await userService.deleteToken(req.tokenPayload.user_id)
+const generalSignOut = async (req, res) => {
+  try {
+    await userService.deleteToken(req.tokenPayload.user_id);
     return res.status(200).json({
       detail: "登出成功",
     });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
-    return res.json({
+    return res.status(500).json({
       detail: "伺服器錯誤",
     });
   }
-}
+};
 const sociaSignUp = async (req, res) => {
   try {
-    console.log(req);
-    console.log(
-      "============================================================================"
-    );
-
-    console.log(req.user.username);
     if (
       (await userService.checkNameFormat(req.user.family_name)) ||
       (await userService.checkNameFormat(req.user.given_name)) ||
@@ -123,36 +117,26 @@ const sociaSignUp = async (req, res) => {
     });
   }
 };
-const userInfo = async (req, res) => {
-  const token = req.headers.authorization.split(" ")[1];
-
-  jwt.verify(
-    token,
-    process.env.SECRET_KEY,
-    async (err, decoded) => {
-      try {
-        if (err) {
-          return res.json({
-            detail: "token過期",
-          });
-        } else {
-          return res.json({
-            detail: "驗證成功",
-            data: decoded.user_id,
-          });
-        }
-      } catch (err) {
-        return res.json({
-          detail: "token不存在",
-        });
-      }
-    }
-  );
+const getUserInfo = async (req, res) => {
+  try {
+    signInMemberInfo = await userService.useIdGetMemberInfo(
+      req.tokenPayload.user_id
+    );
+    return res.status(200).json({
+      detail: "獲取成功",
+      name: signInMemberInfo.first_name + " " + signInMemberInfo.second_name,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      detail: "伺服器錯誤",
+    });
+  }
 };
 module.exports = {
   generalSignUp,
   generalSignIn,
   generalSignOut,
   sociaSignUp,
-  userInfo,
+  getUserInfo,
 };

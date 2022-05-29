@@ -30,7 +30,10 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+db['Users'].hasMany(db['Messages'],{targetKey: 'id',foreignKey : 'user_id'});
+db['Messages'].belongsTo(db['Users'], {targetKey: 'id',foreignKey : 'user_id'});
 
+sequelize.sync();
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

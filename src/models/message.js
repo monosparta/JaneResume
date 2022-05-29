@@ -14,16 +14,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Message.init({
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: DataTypes.INTEGER
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      references: { model: "Users", key: "id" },
-    },
     description:{
       type:DataTypes.STRING
     },

@@ -15,11 +15,23 @@ const checkPasswordCorrectBySignInEmail = async (email, password) => {
   );
   return !compareResult;
 };
-const getMemberInfo = async (email) => {
+const useEmailGetMemberInfo = async (email) => {
   const MemberInfo = await db["Users"].findOne({
     where: { email: email },
   });
   return MemberInfo.dataValues;
+};
+const useIdGetMemberInfo = async (id) => {
+  const MemberInfo = await db["Users"].findOne({
+    where: { id: id },
+  });
+  return MemberInfo.dataValues;
+};
+const tokenGetMemberId = async (token) => {
+  const memberId = await db["Users"].findOne({
+    where: { token: token },
+  });
+  return memberId.dataValues;
 };
 const checkNameFormat = async (name) => {
   return !name;
@@ -36,13 +48,12 @@ const checkEmailFormat = async (email) => {
   );
 };
 const createUser = async (first_name, second_name, email, password) => {
-  await db["Users"]
-    .create({
-      first_name: first_name,
-      second_name: second_name,
-      email: email,
-      password: bcrypt.hashSync(password, 10), // 密碼加密
-    })
+  await db["Users"].create({
+    first_name: first_name,
+    second_name: second_name,
+    email: email,
+    password: bcrypt.hashSync(password, 10), // 密碼加密
+  });
 };
 const addToken = async (userId, token) => {
   await db["Users"].update(
@@ -64,14 +75,17 @@ const deleteToken = async (userId) => {
     }
   );
 };
+
 module.exports = {
   checkEmailExistsBySignUpEmail,
   checkPasswordCorrectBySignInEmail,
-  getMemberInfo,
+  useEmailGetMemberInfo,
   createUser,
   checkNameFormat,
   checkEmailFormat,
   checkPasswordFormat,
   addToken,
   deleteToken,
+  useIdGetMemberInfo,
+  tokenGetMemberId,
 };
