@@ -7,6 +7,7 @@ module.exports = {
       [
         {
           id: 1,
+          social_id:"",
           first_name: "Jane",
           second_name: "Liao",
           email: "admin@gmail.com",

@@ -85,38 +85,6 @@ const generalSignOut = async (req, res) => {
     });
   }
 };
-const sociaSignUp = async (req, res) => {
-  try {
-    if (
-      (await userService.checkNameFormat(req.user.family_name)) ||
-      (await userService.checkNameFormat(req.user.given_name)) ||
-      (await userService.checkEmailFormat(req.user.email))
-    ) {
-      return res.status(400).json({
-        detail: "欄位資料格式有誤",
-      });
-    }
-    if (!(await userService.checkEmailExistsBySignUpEmail(req.user.email))) {
-      return res.status(400).json({
-        detail: "信箱已註冊過，是否要綁定此帳號",
-      });
-    }
-    const googlePassword = "";
-    const googleSingUpState = await userService.createUser(
-      req.user.family_name,
-      req.user.given_name,
-      req.user.email,
-      googlePassword
-    );
-    return res.status(200).json({
-      detail: "註冊成功",
-    });
-  } catch (err) {
-    return res.json({
-      detail: "伺服器錯誤",
-    });
-  }
-};
 const getUserInfo = async (req, res) => {
   try {
     signInMemberInfo = await userService.useIdGetMemberInfo(
@@ -137,6 +105,5 @@ module.exports = {
   generalSignUp,
   generalSignIn,
   generalSignOut,
-  sociaSignUp,
   getUserInfo,
 };

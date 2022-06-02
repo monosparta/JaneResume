@@ -55,6 +55,23 @@ const createUser = async (first_name, second_name, email, password) => {
     password: bcrypt.hashSync(password, 10), // 密碼加密
   });
 };
+const findOrcreateGoogleUser = async (
+  social_id,
+  first_name,
+  second_name,
+  email
+) => {
+  const [user, created] = await db["Users"].findOrCreate({
+    where: { social_id: social_id },
+    defaults: {
+      social_id: social_id,
+      first_name: first_name,
+      second_name: second_name,
+      email: email,
+    },
+  });
+  return user.id
+};
 const addToken = async (userId, token) => {
   await db["Users"].update(
     { token: token },
@@ -88,4 +105,5 @@ module.exports = {
   deleteToken,
   useIdGetMemberInfo,
   tokenGetMemberId,
+  findOrcreateGoogleUser,
 };

@@ -3,24 +3,53 @@ const { messageService, userService } = require("../services/index");
 const getAllMessage = async (req, res) => {
   try {
     const messages = await messageService.getAllMessage();
-
+    const countMessage = await messageService.countMessage();
     const token = req.headers.authorization;
+
     const userId =
-      token == "Basic null" || typeof req.headers.authorization == undefined
+      token == "Basic null" ||
+      typeof req.headers.authorization == undefined ||
+      token == undefined
         ? ""
         : await userService.tokenGetMemberId(token.split(" ")[1]);
     return res.status(200).json({
       detail: "成功取得所有留言內容",
       messages: [...messages.values()],
       userid: userId ? userId.id : "",
+      count: countMessage,
     });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({
       detail: "伺服器錯誤",
     });
   }
 };
+const searchMessage = async (req,res) => {
+  try {
+    const messages = await messageService.searchMessage(req.body.message);
+    const countMessage = await messageService.countSearchMessage(req.body.message);
+    const token = req.headers.authorization;
 
+    const userId =
+      token == "Basic null" ||
+      typeof req.headers.authorization == undefined ||
+      token == undefined
+        ? ""
+        : await userService.tokenGetMemberId(token.split(" ")[1]);
+    return res.status(200).json({
+      detail: "成功取得指定留言內容",
+      messages: [...messages.values()],
+      userid: userId ? userId.id : "",
+      count: countMessage,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      detail: "伺服器錯誤",
+    });
+  }
+};
 const addMessage = async (req, res) => {
   try {
     const token = req.headers.authorization;
@@ -86,11 +115,11 @@ const updateMessage = async (req, res) => {
       return res.status(200).json({
         detail: "成功更新留言",
       });
+    } else {
+      return res.status(403).json({
+        detail: "權限錯誤",
+      });
     }
-
-    return res.status(403).json({
-      detail: "權限錯誤",
-    });
   } catch (err) {
     console.log(err);
     return res.json({
@@ -130,4 +159,5 @@ module.exports = {
   addMessage,
   updateMessage,
   deleteMessage,
+  searchMessage,
 };
