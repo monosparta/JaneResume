@@ -26,6 +26,8 @@ function AccountMenu() {
         window.location.reload();
       })
       .catch((error) => {
+        localStorage.clear();
+        window.location.reload();
         console.log(error.response.data["detail"]);
       });
   };

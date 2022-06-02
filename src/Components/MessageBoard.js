@@ -14,7 +14,6 @@ import axios from "../Axios.config";
 import { useState, useEffect } from "react";
 import SnackbarStyle from "../Components/SnackbarStyle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { grey } from "@mui/material/colors";
 function MessageBoard(props) {
   const [writeState, setWriteState] = useState(true);
   const [description, setDescription] = useState(props.description);
@@ -28,6 +27,7 @@ function MessageBoard(props) {
       })
       .catch((error) => {
         if (error.response.data["detail"] == "登入過期，請重新登入") {
+          localStorage.clear()
           alert(error.response.data["detail"]);
         }
         alert("刪除失敗");
@@ -57,8 +57,8 @@ function MessageBoard(props) {
       .catch((error) => {
         if (error.response.data["detail"] == "登入過期，請重新登入") {
           alert(error.response.data["detail"]);
+          localStorage.clear()
         }
-        alert("更新失敗");
         console.log(error.response.data["detail"]);
       });
   };
@@ -68,33 +68,41 @@ function MessageBoard(props) {
       direction="row"
       justifyContent="space-between"
       alignItems="center"
-      sx={{ my: 3 }}
+      sx={{ my: 3}}
     >
       <Grid sx={{ display: "flex" }}>
         <Avatar>{props.avatar}</Avatar>
         <Box sx={{ px: 4 }}>
           <Grid sx={{ display: "flex" }}>
             <Typography variant="h6">{props.userName}</Typography>
-            <Typography sx={{ px: 2,color:grey }} variant="body2">
+            <Typography
+              sx={{ px: 2,  alignItems: "center" }}
+              variant="body2"
+            >
               {props.createdAt}
             </Typography>
           </Grid>
-          <Input
-            type="text"
-            readOnly={writeState}
-            disableUnderline={writeState}
-            defaultValue={description}
-            id={props.id}
-            onChange={handleMessageChange}
-            sx={{fontSize:"20px"}}
-          />
+          <Grid sx={{ display: "flex" }}>
+            <Input
+              type="text"
+              readOnly={writeState}
+              disableUnderline={writeState}
+              defaultValue={description}
+              id={props.id}
+              onChange={handleMessageChange}
+              sx={{ fontSize: "20px" }}
+            />
+            <Button
+              style={{ display: writeState ? "none" : "flex" }}
+              onClick={() => updateMessage(props.id)}
+              size="medium"
+              variant="contained"
+              sx={{mx:3}}
+            >
+              更改
+            </Button>
+          </Grid>
         </Box>
-        <Button
-          style={{ display: writeState ? "none" : "flex" }}
-          onClick={() => updateMessage(props.id)}
-        >
-          更改
-        </Button>
       </Grid>
       <Grid
         sx={{ pr: 8 }}
