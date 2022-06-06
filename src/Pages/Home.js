@@ -10,12 +10,11 @@ import {
   IconButton,
   Paper,
   Fab,
-  Pagination,
+  TablePagination,
 } from "@mui/material";
 import { useState, useEffect } from "react";
 
 import "./Home.css";
-import usePagination from "../Components/MessagePagination";
 import SkillListItem from "../Components/SkillListItem";
 import IconItem from "../Components/IconItem";
 import WorkStepper from "../Components/WorkStepper";
@@ -38,7 +37,6 @@ import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import {
   FormContainer,
   TextFieldElement,
-  SelectElement,
 } from "react-hook-form-mui";
 import axios from "../Axios.config";
 
@@ -52,11 +50,10 @@ function Home() {
   const [userId, setUserId] = useState("");
   const [state, setState] = useState(false);
   const [showScroll, setShowScroll] = useState(false);
-  const [showEdit, setShowEdit] = useState(false);
   const [countMessage, setCountMessage] = useState(0);
-  const [page, setPage] = useState(1);
   const [searchMessage, setSearchMessage] = useState("");
-
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const getMessages = () => {
     axios
       .get("api/message")
@@ -71,12 +68,6 @@ function Home() {
   useEffect(() => {
     getMessages();
   }, state);
-  const messageDataPagination = usePagination(allMessages, 2);
-  const allMessage = messageDataPagination.currentData();
-  const handlePageChange = (e, p) => {
-    setPage(p);
-    messageDataPagination.jump(p);
-  };
   const checkScrollTop = () => {
     if (!showScroll && window.pageYOffset > 400) {
       setShowScroll(true);
@@ -84,8 +75,12 @@ function Home() {
       setShowScroll(false);
     }
   };
-  const clickMessage = () => {
-    setShowEdit(!showEdit);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
   const scrollTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -102,7 +97,6 @@ function Home() {
       .then((response) => {
         setAllMessages(response.data["messages"]);
         setCountMessage(response.data["count"]);
-        console.log(countMessage)
       })
       .catch((error) => {});
   };
@@ -113,22 +107,18 @@ function Home() {
     const token = localStorage.getItem("token");
     const json = JSON.stringify({
       description: e.message,
-      identity: e.identity,
     });
-    console.log(e.identity == 1, !token);
-
-    if (e.identity == 1 && !token) {
+    if (!token) {
       alert("請先登入");
     } else {
-      console.log(json);
       axios
         .post("api/message", JSON.parse(json))
         .then((response) => {
           alert("新增成功");
-
-          setTimeout(() => window.location.reload(), 3000);
+          window.location.reload();
         })
         .catch((error) => {
+          console.log(error.response)
           alert("新增失敗");
         });
     }
@@ -213,16 +203,6 @@ function Home() {
           justifyContent="space-between"
           alignItems="center"
         >
-          <Fab
-            variant="extended"
-            size="medium"
-            color="secondary"
-            aria-label="add"
-            onClick={clickMessage}
-          >
-            <ArrowCircleUpIcon sx={{ mr: 1 }} />
-            我要留言
-          </Fab>
           <Typography variant="h4">訪客留言版</Typography>
           <Paper
             component="form"
@@ -246,73 +226,72 @@ function Home() {
             >
               <SearchIcon />
             </IconButton>
-          </Paper>{" "}
+          </Paper>
         </Grid>
-        <FormContainer onSuccess={handleAddMessageSubmit}>
-          <Grid
-            container
-            spacing={2}
-            alignItems="center"
-            sx={{ marginY: 3, pl: 3 }}
-            style={{ display: showEdit ? "flex" : "none" }}
-          >
-            <TextFieldElement
-              required
-              parseError={parseError}
-              fullWidth
-              id="message"
-              label="留言"
-              name="message"
-              rows={4}
-              multiline
-            />
-            <SelectElement
-              required
-              parseError={parseError}
-              fullWidth
-              id="identity"
-              label="留言身分"
-              name="identity"
-              options={[
-                { id: "0", title: "匿名留言" },
-                { id: "1", title: "一般留言" },
-              ]}
-              sx={{ my: 3 }}
-            />
-            <Box>
-              <Button variant="contained" sx={{ marginY: 2 }} type="submit">
-                發布
-              </Button>
-            </Box>
-          </Grid>
-        </FormContainer>
+
         <Grid spacing={2} sx={{ marginY: 3 }}>
-          {(allMessage || []).map((message) => (
-            <MessageBoard
-              avatar={
-                message.User != null
-                  ? message.User.first_name[0] + message.User.second_name[0]
-                  : "匿名"
-              }
-              userName={
-                message.User != null
-                  ? message.User.first_name + message.User.second_name
-                  : "匿名"
-              }
-              createdAt={message.createdAt}
-              description={message.description}
-              id={message.id}
-              actionState={message.user_id == userId ? true : false}
-            />
-          ))}
-          <Pagination
-            count={Math.ceil(countMessage / 2)}
-            size="large"
+          {(allMessages || [])
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((message) => (
+              <Paper
+                sx={{
+                  my: 2,
+                  p: 1,
+                }}
+              >
+                <MessageBoard
+                  userName={
+                    message.User != null
+                      ? message.User.first_name + message.User.second_name
+                      : "匿名"
+                  }
+                  createdAt={message.createdAt}
+                  description={message.description}
+                  id={message.id}
+                  actionState={message.user_id == userId ? true : false}
+                />
+              </Paper>
+            ))}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 100]}
+            component="div"
+            count={countMessage}
+            rowsPerPage={rowsPerPage}
             page={page}
-            variant="outlined"
-            shape="rounded"
-            onChange={handlePageChange}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
           />
+          <Paper
+            sx={{
+              my: 2,
+              p: 1,
+            }}
+          >
+            <FormContainer onSuccess={handleAddMessageSubmit}>
+              <Grid
+                container
+                spacing={2}
+                alignItems="center"
+                sx={{ marginY: 3, pl: 3 }}
+              >
+                <TextFieldElement
+                  required
+                  parseError={parseError}
+                  fullWidth
+                  id="message"
+                  label="留言"
+                  name="message"
+                  rows={4}
+                  multiline
+                />
+                <Box>
+                  <Button variant="contained" sx={{ marginY: 2 }} type="submit">
+                    發布
+                  </Button>
+                </Box>
+              </Grid>
+            </FormContainer>{" "}
+          </Paper>
         </Grid>
       </Box>
     </Box>

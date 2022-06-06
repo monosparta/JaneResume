@@ -5,14 +5,12 @@ import SignUp from "./Pages/SignUp";
 import SignIn from "./Pages/SignIn";
 import ForgetPassword from "./Pages/ForgetPassword";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import NavbarSignIn from "./Components/NavbarSignIn";
-import NavbarSignOut from "./Components/NavbarSignOut";
+import Navbar from "./Components/Navbar";
 function App() {
-  const userToken = localStorage.getItem("token");
 
   return (
     <Router>
-      {userToken ? <NavbarSignIn /> : <NavbarSignOut />}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUp />} />

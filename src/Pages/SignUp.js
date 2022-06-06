@@ -62,6 +62,16 @@ function SignUp() {
         setOpen(true);
       });
   };
+  const handleGoogleLogin = (e) => {
+    axios
+      .get("/auth/google")
+      .then((response) => {
+        console.log(response.headers,'====xxx===');
+      })
+      .catch((error) => {
+        console.log(error.response);
+      });
+  };
   const parseError = (error) => {
     if (error.type === "pattern") {
       return "請輸入正確的電子郵件格式";
@@ -180,21 +190,24 @@ function SignUp() {
             <Divider sx={{ mt: 3, mb: 2 }}>使用第三方帳號進行註冊</Divider>
             <Grid container sx={{ justifyContent: "center" }}>
               <Grid item>
-                <Link href="http://localhost:3000/auth/google" underline="none">
-                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+                {/* <Link href="http://localhost:3000/auth/google" underline="none"> */}
+                  <Avatar sx={{ m: 1, bgcolor: "secondary.main" }} onClick={handleGoogleLogin}>
                     <GoogleIcon />
                   </Avatar>{" "}
-                </Link>
+                {/* </Link> */}
               </Grid>
               <Grid item>
-              <Link href="http://localhost:3000/auth/github" underline="none">
+                <Link href="http://localhost:3000/auth/github" underline="none">
                   <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
                     <GitHubIcon />
                   </Avatar>
-                  </Link>
+                </Link>
               </Grid>
               <Grid item>
-                <Link href="http://localhost:3000/auth/facebook" underline="none">
+                <Link
+                  href="http://localhost:3000/auth/facebook"
+                  underline="none"
+                >
                   <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
                     <FacebookIcon />
                   </Avatar>

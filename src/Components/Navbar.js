@@ -7,17 +7,16 @@ import {
   ListItemIcon,
   Divider,
   IconButton,
-  Typography,
   Tooltip,
   Link,
 } from "@mui/material";
 import Logout from "@mui/icons-material/Logout";
-import { useState, useEffect } from "react";
 import axios from "../Axios.config";
+import { useNavigate } from "react-router-dom";
 
 function AccountMenu() {
-  const [userName, setUserName] = useState("");
-  const [state, setState] = useState(false);
+  let history = useNavigate();
+  const userName = localStorage.getItem("name");
   const handleLogout = () => {
     axios
       .get("api/auth/signout")
@@ -31,22 +30,6 @@ function AccountMenu() {
         console.log(error.response.data["detail"]);
       });
   };
-  const getUserInfo = () => {
-    axios
-      .get("api/auth/userinfo")
-      .then((response) => {
-        setState(true);
-        setUserName(response.data["name"]);
-      })
-      .catch((error) => {
-        if (error.response.data["detail"] == "登入過期，請重新登入") {
-          alert(error.response.data["detail"]);
-        }
-      });
-  };
-  useEffect(() => {
-    getUserInfo();
-  }, state);
   const stringToColor = (string) => {
     let hash = 0;
     let i;
@@ -82,33 +65,55 @@ function AccountMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleClickSignIn = () => {
+    history("/signin");
+  };
   return (
     <React.Fragment>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          textAlign: "center",
-          flexDirection: "row-reverse",
-          m: 2,
-        }}
-      >
-        <Tooltip title="帳戶設定">
-          <IconButton
-            onClick={handleClick}
-            size="small"
-            sx={{ pr: 2 }}
-            aria-controls={open ? "account-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-          >
-            <Avatar {...stringAvatar(userName)} />
+      {userName ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            textAlign: "center",
+            flexDirection: "row-reverse",
+            m: 2,
+          }}
+        >
+          <Tooltip title="帳戶設定">
+            <IconButton
+              onClick={handleClick}
+              size="small"
+              sx={{ pr: 2 }}
+              aria-controls={open ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? "true" : undefined}
+            >
+              <Avatar {...stringAvatar(userName)} />
+            </IconButton>
+          </Tooltip>
+          <Link href="/" underline="none" variant="h6" sx={{ mx: 4 }}>
+            履歷查看
+          </Link>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            textAlign: "center",
+            flexDirection: "row-reverse",
+            m: 2,
+          }}
+        >
+          <IconButton onClick={handleClickSignIn} size="small" sx={{ pr: 2 }}>
+            <Avatar />
           </IconButton>
-        </Tooltip>
-        <Link href="/" underline="none" variant="h6" sx={{ mx: 4 }}>
-          履歷查看
-        </Link>
-      </Box>
+          <Link href="/" underline="none" variant="h6" sx={{ mx: 4 }}>
+            履歷查看
+          </Link>
+        </Box>
+      )}
       <Menu
         anchorEl={anchorEl}
         id="account-menu"

@@ -47,13 +47,25 @@ function SignIn() {
       password: e.password,
     });
     axios
-      .post("api/signin", JSON.parse(json))
+      .pogetst("api/general/signin", JSON.parse(json))
       .then((response) => {
-        setsnackBarType("success");
-        setsubmitDetail(response.data["detail"]);
-        setOpen(true);
         localStorage.setItem("token", response.data["token"]);
-        setTimeout(() => history("/"), 3000);
+        localStorage.setItem("name", response.data["name"]);
+        history("/");
+      })
+      .catch((error) => {
+        setsnackBarType("error");
+        setsubmitDetail(error.response.data["detail"]);
+        setOpen(true);
+      });
+  };
+  const anonymousLogin = () => {
+    axios
+      .get("api/anonymous/signin")
+      .then((response) => {
+        localStorage.setItem("token", response.data["token"]);
+        localStorage.setItem("name", response.data["name"]);
+        history("/");
       })
       .catch((error) => {
         setsnackBarType("error");
@@ -152,6 +164,14 @@ function SignIn() {
                 <Link href="/signup" variant="body2">
                   尚未註冊
                 </Link>
+              </Grid>
+            </Grid>
+            <Divider sx={{ mt: 3, mb: 2 }}>其他登入</Divider>
+            <Grid container sx={{ justifyContent: "center" }}>
+              <Grid item>
+                <Button onClick={anonymousLogin} fullWidth variant="contained">
+                  匿名登入
+                </Button>
               </Grid>
             </Grid>
             <Divider sx={{ mt: 3, mb: 2 }}>使用第三方帳號進行登入</Divider>
