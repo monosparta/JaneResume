@@ -55,6 +55,13 @@ const createUser = async (first_name, second_name, email, password) => {
     password: bcrypt.hashSync(password, 10), // 密碼加密
   });
 };
+const createAnonymousUser=async(first_name,second_name)=>{
+  const anonymousUser=await db["Users"].create({
+    first_name: first_name,
+    second_name: second_name
+  });
+  return anonymousUser.dataValues
+}
 const findOrcreateGoogleUser = async (
   social_id,
   first_name,
@@ -105,5 +112,5 @@ module.exports = {
   deleteToken,
   useIdGetMemberInfo,
   tokenGetMemberId,
-  findOrcreateGoogleUser,
+  findOrcreateGoogleUser,createAnonymousUser
 };

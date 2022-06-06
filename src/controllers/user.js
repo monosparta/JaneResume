@@ -72,6 +72,22 @@ const generalSignIn = async (req, res) => {
     });
   }
 };
+const anonymousSignIn = async (req,res) => {
+  const anonymousUser=await userService.createAnonymousUser(
+    "匿",
+    "名",
+  );
+  const token = jwt.sign(
+    { user_id: anonymousUser.id},
+    process.env.SECRET_KEY,
+  );
+  await userService.addToken(anonymousUser.id, token);
+  return res.status(200).json({
+    detail: "登入成功",
+    token: token,
+    name: anonymousUser.first_name + " " + anonymousUser.second_name,
+  });
+};
 const generalSignOut = async (req, res) => {
   try {
     await userService.deleteToken(req.tokenPayload.user_id);
@@ -106,4 +122,5 @@ module.exports = {
   generalSignIn,
   generalSignOut,
   getUserInfo,
+  anonymousSignIn,
 };

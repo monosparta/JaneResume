@@ -25,10 +25,12 @@ const getAllMessage = async (req, res) => {
     });
   }
 };
-const searchMessage = async (req,res) => {
+const searchMessage = async (req, res) => {
   try {
     const messages = await messageService.searchMessage(req.body.message);
-    const countMessage = await messageService.countSearchMessage(req.body.message);
+    const countMessage = await messageService.countSearchMessage(
+      req.body.message
+    );
     const token = req.headers.authorization;
 
     const userId =
@@ -53,33 +55,20 @@ const searchMessage = async (req,res) => {
 const addMessage = async (req, res) => {
   try {
     const token = req.headers.authorization;
-    if (
-      (await messageService.checkIdentityFormat(req.body.identity)) ||
-      (await messageService.checkDescriptionFormat(req.body.description))
-    ) {
+    if (await messageService.checkDescriptionFormat(req.body.description)) {
       return res.status(400).json({
         detail: "欄位資料格式有誤",
       });
     }
-    if (req.body.identity == 1) {
-      const userId =
-        token == "Basic null"
-          ? ""
-          : await userService.tokenGetMemberId(token.split(" ")[1]);
-      if (userId) {
-        await messageService.addMessage(userId.id, req.body.description);
-        return res.status(200).json({
-          detail: "成功新增留言",
-        });
-      } else {
-        return res.status(403).json({
-          detail: "權限錯誤",
-        });
-      }
-    } else {
-      await messageService.addMessage(null, req.body.description);
+    if (token) {
+      const userId = await userService.tokenGetMemberId(token.split(" ")[1]);
+      await messageService.addMessage(userId.id, req.body.description);
       return res.status(200).json({
         detail: "成功新增留言",
+      });
+    } else {
+      return res.status(403).json({
+        detail: "請先登入",
       });
     }
   } catch (err) {

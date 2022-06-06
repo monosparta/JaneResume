@@ -34,7 +34,9 @@ router.get(
 // );
 router.get("/success",socialController.handleSuccess);
 router.post("/api/signup", userController.generalSignUp);
-router.post("/api/signin", userController.generalSignIn);
+router.post("/api/general/signin", userController.generalSignIn);
+router.get("/api/anonymous/signin", userController.anonymousSignIn);
+
 router.use("/api/auth",userAuth.userJWT)
 router.get("/api/auth/userinfo", userController.getUserInfo);
 
