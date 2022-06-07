@@ -62,16 +62,13 @@ const checkMessageIdExist = async (messageId) => {
 };
 
 const addMessage = async (userId, description) => {
-  if (userId != null) {
-    await db["Messages"].create({
-      user_id: userId,
-      description: description,
-    });
-  } else {
-    await db["Messages"].create({
-      description: description,
-    });
-  }
+  const messageId = await db["Messages"].max("id");
+
+  await db["Messages"].create({
+    id: messageId + 1,
+    user_id: userId,
+    description: description,
+  });
 };
 const updateMessage = async (userId, messageId, description) => {
   const update = await db["Messages"].update(
@@ -114,5 +111,6 @@ module.exports = {
   checkUseridFormat,
   checkMessageIdExist,
   countMessage,
-  searchMessage,countSearchMessage
+  searchMessage,
+  countSearchMessage,
 };

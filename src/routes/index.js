@@ -45,7 +45,7 @@ router.get("/api/auth/signout", userController.generalSignOut);
 router.get("/api/message", messageController.getAllMessage);
 router.post("/api/searchmessage", messageController.searchMessage);
 
-router.post("/api/message", messageController.addMessage);
+router.post("/api/auth/message", messageController.addMessage);
 router.put("/api/auth/message", messageController.updateMessage);
 router.delete("/api/auth/message/:id", messageController.deleteMessage);
 

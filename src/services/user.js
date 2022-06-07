@@ -48,20 +48,24 @@ const checkEmailFormat = async (email) => {
   );
 };
 const createUser = async (first_name, second_name, email, password) => {
+  const userId = await db["Users"].max("id");
   await db["Users"].create({
+    id: userId + 1,
     first_name: first_name,
     second_name: second_name,
     email: email,
     password: bcrypt.hashSync(password, 10), // 密碼加密
   });
 };
-const createAnonymousUser=async(first_name,second_name)=>{
-  const anonymousUser=await db["Users"].create({
+const createAnonymousUser = async (first_name, second_name) => {
+  const userId = await db["Users"].max("id");
+  const anonymousUser = await db["Users"].create({
+    id: userId + 1,
     first_name: first_name,
-    second_name: second_name
+    second_name: second_name,
   });
-  return anonymousUser.dataValues
-}
+  return anonymousUser.dataValues;
+};
 const findOrcreateGoogleUser = async (
   social_id,
   first_name,
@@ -77,7 +81,7 @@ const findOrcreateGoogleUser = async (
       email: email,
     },
   });
-  return user.id
+  return user.id;
 };
 const addToken = async (userId, token) => {
   await db["Users"].update(
@@ -112,5 +116,6 @@ module.exports = {
   deleteToken,
   useIdGetMemberInfo,
   tokenGetMemberId,
-  findOrcreateGoogleUser,createAnonymousUser
+  findOrcreateGoogleUser,
+  createAnonymousUser,
 };

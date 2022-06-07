@@ -5,7 +5,6 @@ const getAllMessage = async (req, res) => {
     const messages = await messageService.getAllMessage();
     const countMessage = await messageService.countMessage();
     const token = req.headers.authorization;
-
     const userId =
       token == "Basic null" ||
       typeof req.headers.authorization == undefined ||
@@ -62,6 +61,7 @@ const addMessage = async (req, res) => {
     }
     if (token) {
       const userId = await userService.tokenGetMemberId(token.split(" ")[1]);
+      console.log(userId.id)
       await messageService.addMessage(userId.id, req.body.description);
       return res.status(200).json({
         detail: "成功新增留言",

@@ -27,6 +27,7 @@ const generalSignUp = async (req, res) => {
       detail: "註冊成功，將在3秒後跳轉至登入頁面",
     });
   } catch (err) {
+    console.log(err)
     return res.status(500).json({
       detail: "伺服器錯誤",
     });

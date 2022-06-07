@@ -7,7 +7,7 @@ const passport = require('passport')
 const app = express();
 app.use(cors());
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 const router = require("./routes/index");
 app.use(session({
   resave: false,
