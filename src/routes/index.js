@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const passportGoogle = require("../config/passportGoogle");
+// const passportGoogle = require("../config/passportGoogle");
 // const passportGithub = require("../config/passportGithub");
 
 const { userController,messageController,socialController } = require("../controllers/index");
@@ -8,17 +8,17 @@ const userAuth=require("../middleware/userAuth")
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
-router.get(
-  "/auth/google",
-  passportGoogle.authenticate("google", { scope: ["email", "profile"] })
-);
-router.get(
-  "/auth/google/callback",
-  passportGoogle.authenticate("google", {
-    successRedirect: "/success",
-    failureRedirect: "/login",
-  })
-);
+// router.get(
+//   "/auth/google",
+//   passportGoogle.authenticate("google", { scope: ["email", "profile"] })
+// );
+// router.get(
+//   "/auth/google/callback",
+//   passportGoogle.authenticate("google", {
+//     successRedirect: "/success",
+//     failureRedirect: "/login",
+//   })
+// );
 
 // router.get(
 //   "/auth/github",
@@ -32,7 +32,7 @@ router.get(
 //     session: false,
 //   })
 // );
-router.get("/success",socialController.handleSuccess);
+// router.get("/success",socialController.handleSuccess);
 router.post("/api/signup", userController.generalSignUp);
 router.post("/api/general/signin", userController.generalSignIn);
 router.get("/api/anonymous/signin", userController.anonymousSignIn);
